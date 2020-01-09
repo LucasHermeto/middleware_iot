@@ -1,0 +1,38 @@
+version: "3.4"
+
+services:
+    heimdall:
+      env_file:
+        - server.env
+      build: 
+        dockerfile: ./Dockerfile
+        context: .
+      network_mode: host 
+      depends_on:
+        - influxdb
+        - mqtt
+
+    influxdb:
+      image: influxdb:latest
+      ports:
+        - "8086:8086"
+      environment:
+        INFLUXDB_DB: sensors
+      volumes:
+        - ./influxdb:/var/lib/influxdb
+    
+    mqtt:
+      image: eclipse-mosquitto:latest
+      ports:
+        - "1883:1883"
+        - "9001:9001"
+      volumes:
+        - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+    grafana:
+      image: grafana/grafana:latest
+      ports:
+        - "3000:3000"
+      user: root
+      volumes:
+        - ./grafana:/var/lib/grafana

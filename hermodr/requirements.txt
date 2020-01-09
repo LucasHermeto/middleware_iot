@@ -1,0 +1,4 @@
+flask
+flask_httpauth
+paho.mqtt
+influxdb
